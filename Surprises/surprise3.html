@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surprise 3</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    background: #d9dde1;
+    font-family: 'Courier New', monospace;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* CONTAINER */
+.container {
+    width: 85%;
+    max-width: 550px;
+    background: #e8e6e1;
+    padding: 40px 25px 25px;
+    border-radius: 10px;
+    box-shadow: 0px 10px 30px rgba(0,0,0,0.1);
+    text-align: left;
+    position: relative;
+    z-index: 2;
+}
+
+/* TEXT */
+#lineContainer div {
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* HINT */
+#hint, #endMessage {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #555;
+    text-align: center;
+}
+
+#endMessage {
+    display: none;
+    font-weight: bold;
+}
+
+/* FINAL PAGE */
+.final {
+    display: none;
+    font-size: 24px;
+    text-align: center;
+}
+
+/* BUTTON */
+.next-btn {
+    display: block;
+    margin-top: 20px;
+    text-align: right;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* BACK BUTTON */
+.back-btn {
+    display: none;
+    position: fixed;
+    right: 20px;
+    bottom: 30px;
+    background: #e6c86e;
+    padding: 10px 18px;
+    border-radius: 25px;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+}
+
+/* POLAROIDS */
+.polaroid-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+    display: none;
+}
+
+.polaroid {
+    position: absolute;
+    width: 120px;
+    background: white;
+    padding: 8px 8px 15px;
+    box-shadow: 0px 6px 15px rgba(0,0,0,0.2);
+    border-radius: 6px;
+}
+
+.polaroid img {
+    width: 100%;
+}
+
+/* PAGE 1 POSITIONS */
+#polaroids-page1 .p1 { --rotate: -10deg; top: 2%; left: 5%; opacity: 0; animation: fadeInPolaroid 1s ease forwards; animation-delay: 0.3s; width: 80px; }
+#polaroids-page1 .p2 { --rotate: 8deg; top: 2%; right: 5%; opacity: 0; animation: fadeInPolaroid 1s ease forwards; animation-delay: 0.8s; width: 80px; }
+#polaroids-page1 .p3 { --rotate: 5deg; bottom: 5%; left: 2%; opacity: 0; animation: fadeInPolaroid 1s ease forwards; animation-delay: 1.3s; }
+
+@keyframes fadeInPolaroid {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9) rotate(0deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(var(--rotate));
+    }
+}
+
+/* PAGE 2 POSITIONS */
+#polaroids-page2 .p1 { --rotate: -5deg; top: 4%; left: 4%; opacity: 0; animation: popInPolaroid 0.8s ease forwards; animation-delay: 0.3s; }
+#polaroids-page2 .p3 { --rotate: 7deg; top: 4%; right: 4%; opacity: 0; animation: popInPolaroid 0.8s ease forwards; animation-delay: 0.8s; }
+#polaroids-page2 .p2 { --rotate: -3deg; bottom: 4%; left: 4%; opacity: 0; animation: popInPolaroid 0.8s ease forwards; animation-delay: 1.3s; width: 200px; }
+
+@keyframes popInPolaroid {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) rotate(var(--rotate));
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.2) rotate(var(--rotate));
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(var(--rotate));
+    }
+}
+
+/* CONFETTI CONTAINER */
+#confetti-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 999;
+}
+
+/* CONFETTI PIECES */
+.confetti {
+    position: absolute;
+    width: 8px;
+    height: 12px;
+    opacity: 1;
+    animation: fall linear forwards;
+}
+
+/* FALL ANIMATION */
+@keyframes fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+    100% {
+        transform: translateY(200vh) rotate(720deg);
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+<!-- PAGE 1 POLAROIDS -->
+<div id="polaroids-page1" class="polaroid-container">
+    <div class="polaroid p1"><img src="../images/photo3.jpg"></div>
+    <div class="polaroid p2"><img src="../images/photo4.jpg"></div>
+    <div class="polaroid p3"><img src="../images/photo5.jpg"></div>
+</div>
+
+<!-- PAGE 2 POLAROIDS -->
+<div id="polaroids-page2" class="polaroid-container">
+    <div class="polaroid p1"><img src="../images/img1.jpg"></div>
+    <div class="polaroid p2"><img src="../images/img2.jpg"></div>
+    <div class="polaroid p3"><img src="../images/img3.jpg"></div>
+
+</div>
+
+<div id="confetti-container"></div>
+
+<div class="container">
+
+    <!-- PAGE 1 -->
+    <div id="page1" class="text">
+        <div id="lineContainer"></div>
+
+        <div id="hint">Press Enter to read...</div>
+
+        <!-- ✅ NEW MESSAGE -->
+        <div id="endMessage">Press Next to continue...</div>
+
+        <span class="next-btn" onclick="showFinal()">Next</span>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div id="page2" class="final">
+        <p>
+            Once Again Wishing U A <br>
+            Very Happy Birthday Diiii !!!
+        </p>
+    </div>
+
+</div>
+
+<a href="../index.html" id="backBtn" class="back-btn">BACK ◀</a>
+
+<script>
+const lines = [
+"❤️Adiye Vaisiyaa❤️",
+"I can’t wait to make more memories as we grow closer with time",
+"From this year on, I better see some effort… you texting and calling first 😌",
+"Looking forward to more endless laughter and a lifetime of an unbreakable bond."
+];
+
+let currentLine = 0;
+
+// Show next line
+function showNextLine() {
+    if (currentLine < lines.length) {
+        const container = document.getElementById("lineContainer");
+
+        const newLine = document.createElement("div");
+        newLine.textContent = lines[currentLine];
+
+        // center first line
+        if (currentLine === 0) {
+            newLine.style.textAlign = "center";
+            newLine.style.fontWeight = "bold";
+            newLine.style.fontFamily = "Arial, sans-serif";
+        }
+
+        container.appendChild(newLine);
+
+        currentLine++;
+
+        // ✅ show end message and hide hint only after last line
+        if (currentLine === lines.length) {
+            document.getElementById("endMessage").style.display = "block";
+            document.getElementById("hint").style.display = "none";
+        }
+    }
+}
+
+// ENTER key
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+        showNextLine();
+    }
+});
+
+// TAP (mobile + desktop)
+document.addEventListener("click", function() {
+    showNextLine();
+});
+
+// first line auto
+window.onload = showNextLine;
+
+// INITIAL LOAD
+window.onload = function() {
+    showNextLine();
+
+    document.getElementById("page1").style.display = "block";
+    document.getElementById("page2").style.display = "none";
+
+    document.getElementById("polaroids-page1").style.display = "block";
+    document.getElementById("polaroids-page2").style.display = "none";
+};
+
+// NEXT PAGE
+function showFinal() {
+    document.getElementById("page1").style.display = "none";
+    document.getElementById("page2").style.display = "block";
+
+    document.getElementById("polaroids-page1").style.display = "none";
+    document.getElementById("polaroids-page2").style.display = "block";
+
+    document.getElementById("backBtn").style.display = "block";
+
+    launchConfetti();
+}
+
+function launchConfetti() {
+   const container = document.getElementById("confetti-container");
+
+    for (let i = 0; i < 120; i++) {
+        const confetti = document.createElement("div");
+        confetti.classList.add("confetti");
+
+        // random horizontal position
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.top = Math.random() * -100 + "vh";
+
+        // random colors
+        confetti.style.backgroundColor =
+            ["#ff4d4d","#ffd11a","#4dff88","#4db8ff","#ff66cc"][Math.floor(Math.random()*5)];
+
+        // random fall speed
+        confetti.style.animationDuration = (4 + Math.random() * 6) + "s";
+
+        // slight delay for natural effect
+        confetti.style.animationDelay = Math.random() * 2 + "s";
+
+        container.appendChild(confetti);
+
+        const totalTime = (parseFloat(confetti.style.animationDuration) +
+                   parseFloat(confetti.style.animationDelay)) * 1000;
+
+
+        setTimeout(() => confetti.remove(), totalTime);
+    }
+}
+
+</script>
+
+</body>
+</html>
